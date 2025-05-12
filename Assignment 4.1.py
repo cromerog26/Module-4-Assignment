@@ -9,15 +9,12 @@ features = ['music_time_slot', 'fav_music_genre',
             'preferred_listening_content',
             'spotify_subscription_plan', 'music_lis_frequency']
 
-df_clean = pd.get_dummies(df[features])
-
-scaler = StandardScaler()
-X = scaler.fit_transform(df_clean)
+df = pd.get_dummies(df[features])
 
 inertia_values = []
 for k in range(2, 61):
     kmeans = KMeans(n_clusters = k)
-    kmeans.fit(X)
+    kmeans.fit(df)
     print(f'k = {k} | inertia = {kmeans.inertia_}')
     inertia_values.append(kmeans.inertia_)
 
@@ -29,8 +26,4 @@ plt.grid(True)
 plt.show()
 
 kmeans = KMeans(n_clusters = 41)
-df['cluster'] = kmeans.fit_predict(X)
-
-print(df.groupby('cluster')[['music_time_slot', 'fav_music_genre', 
-                             'preferred_listening_content']]
-                             .agg(lambda x: x.value_counts().index[0]))
+df['cluster'] = kmeans.fit_predict(df)
